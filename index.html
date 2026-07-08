@@ -1,27 +1,328 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<style>
-*{margin:0;padding:0}
-body{background:#fff;height:100vh;display:flex;align-items:center;justify-content:center}
-.btn{
-font-size:22px;
-color:#0066ff;
-cursor:pointer;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理后台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            darkBg: '#1a1d24',
+            darkCard: '#272b33',
+            primary: '#409eff',
+            textGray: '#b0b8c4',
+            borderDark: '#3a3f48',
+          },
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #14171c;
+      color: #e5eaf3;
+    }
+    .sidebar-item.active {
+      background-color: #2d323c;
+      border-left: 3px solid #409eff;
+      color: #fff;
+    }
+    .tag-paid {
+      background: #36c76c;
+      color: #000;
+      padding: 2px 6px;
+      font-size: 12px;
+      border-radius: 3px;
+    }
+    .tag-expire {
+      background: #e05555;
+      color: #fff;
+      padding: 2px 6px;
+      font-size: 12px;
+      border-radius: 3px;
+    }
+  </style>
 </head>
-<body>
-<div class="btn" onclick="jump()">点击下载</div>
+<body class="flex h-screen overflow-hidden">
+
+<!-- 左侧侧边栏 -->
+<div class="w-48 bg-darkBg flex-shrink-0 flex flex-col">
+  <div class="p-4 text-xl font-bold border-b border-borderDark">管理中心</div>
+  <div class="flex-1 py-2">
+    <div class="sidebar-item px-4 py-3 cursor-pointer hover:bg-darkCard" data-page="overview">
+      <i class="fa fa-dashboard mr-2"></i>我的概览
+    </div>
+    <div class="sidebar-item px-4 py-3 cursor-pointer hover:bg-darkCard" data-page="register">
+      <i class="fa fa-user-plus mr-2"></i>注册统计
+    </div>
+    <div class="sidebar-item px-4 py-3 cursor-pointer hover:bg-darkCard" data-page="recharge">
+      <i class="fa fa-money mr-2"></i>充值统计
+    </div>
+    <div class="sidebar-item px-4 py-3 cursor-pointer hover:bg-darkCard active" data-page="orders">
+      <i class="fa fa-list-alt mr-2"></i>订单记录
+    </div>
+  </div>
+</div>
+
+<!-- 右侧主内容区 -->
+<div class="flex-1 overflow-auto p-6">
+  <!-- 顶部栏 -->
+  <div class="flex items-center justify-between mb-4">
+    <div class="flex gap-2">
+      <span class="px-3 py-1 bg-darkCard rounded">子代理</span>
+      <span class="px-3 py-1 bg-primary/20 text-primary rounded">大星</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <span>大星</span>
+      <i class="fa fa-user-circle-o text-xl"></i>
+    </div>
+  </div>
+
+  <!-- 页面容器 -->
+  <div id="page-overview" class="page-content hidden">
+    <h2 class="text-lg mb-4">我的概览</h2>
+    <div class="flex items-center gap-4 mb-6">
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <span>—</span>
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <button class="px-3 py-1 bg-darkCard rounded hover:bg-borderDark">刷新</button>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <div class="bg-darkCard p-4 rounded">
+        <div class="text-textGray text-sm">总注册</div>
+        <div class="text-2xl mt-2">1</div>
+      </div>
+      <div class="bg-darkCard p-4 rounded">
+        <div class="text-textGray text-sm">总充值</div>
+        <div class="text-2xl mt-2">228.00</div>
+      </div>
+      <div class="bg-darkCard p-4 rounded">
+        <div class="text-textGray text-sm">付费订单</div>
+        <div class="text-2xl mt-2">2</div>
+      </div>
+    </div>
+    <div class="bg-darkCard rounded p-4">
+      <div class="text-textGray mb-3">下级代理统计</div>
+      <table class="w-full text-sm">
+        <thead class="text-textGray border-b border-borderDark">
+          <tr>
+            <th class="text-left py-2">代理</th>
+            <th class="text-left py-2">渠道号</th>
+            <th class="text-left py-2">注册</th>
+            <th class="text-left py-2">充值</th>
+            <th class="text-left py-2">订单数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-borderDark/30">
+            <td class="py-2">+ 大星 子代理</td>
+            <td class="py-2">CHH9S66DZXLB</td>
+            <td class="py-2">1</td>
+            <td class="py-2">228.00</td>
+            <td class="py-2">2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="page-register" class="page-content hidden">
+    <h2 class="text-lg mb-4">注册统计</h2>
+    <div class="flex items-center gap-4 mb-6">
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <span>—</span>
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <button class="px-3 py-1 bg-darkCard rounded hover:bg-borderDark">刷新</button>
+    </div>
+    <div class="bg-darkCard rounded p-4">
+      <table class="w-full text-sm">
+        <thead class="text-textGray border-b border-borderDark">
+          <tr>
+            <th class="text-left py-2">账号</th>
+            <th class="text-left py-2">代理</th>
+            <th class="text-left py-2">渠道号</th>
+            <th class="text-left py-2">邀请码</th>
+            <th class="text-left py-2">时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-borderDark/30">
+            <td class="py-2">a14739959825</td>
+            <td class="py-2">大星</td>
+            <td class="py-2">CHH9S66DZXLB</td>
+            <td class="py-2">ZQ66</td>
+            <td class="py-2">2026-07-08 08:37:29</td>
+          </tr>
+        </tbody>
+        <tfoot class="mt-2 text-right text-textGray">
+          <tr>
+            <td colspan="5" class="py-2">共1条 <span class="float-right">1 / 1页  20条/页</span></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <div id="page-recharge" class="page-content hidden">
+    <h2 class="text-lg mb-4">充值统计</h2>
+    <div class="flex items-center gap-4 mb-6">
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <span>—</span>
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <button class="px-3 py-1 bg-darkCard rounded hover:bg-borderDark">刷新</button>
+    </div>
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <div class="bg-darkCard p-4 rounded">
+        <div class="text-textGray text-sm">总注册</div>
+        <div class="text-2xl mt-2">1</div>
+      </div>
+      <div class="bg-darkCard p-4 rounded">
+        <div class="text-textGray text-sm">总充值</div>
+        <div class="text-2xl mt-2">228.00</div>
+      </div>
+      <div class="bg-darkCard p-4 rounded">
+        <div class="text-textGray text-sm">付费订单</div>
+        <div class="text-2xl mt-2">2</div>
+      </div>
+    </div>
+    <div class="bg-darkCard rounded p-4 mb-4">
+      <div class="text-textGray mb-3">自动转账</div>
+      <div class="grid grid-cols-3 gap-4 text-sm">
+        <div>
+          <div class="text-textGray">手续费</div>
+          <div class="border border-borderDark rounded h-8 mt-1"></div>
+        </div>
+        <div>
+          <div class="text-textGray">结算比例</div>
+          <div class="border border-borderDark rounded h-8 mt-1"></div>
+        </div>
+        <div>
+          <div class="text-textGray">U市场价</div>
+          <div class="flex border border-borderDark rounded h-8 mt-1">
+            <div class="flex-1"></div>
+            <span class="px-2 text-textGray">元</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-darkCard rounded p-4">
+      <table class="w-full text-sm">
+        <thead class="text-textGray border-b border-borderDark">
+          <tr>
+            <th class="text-left py-2">代理</th>
+            <th class="text-left py-2">渠道号</th>
+            <th class="text-left py-2">注册</th>
+            <th class="text-left py-2">充值</th>
+            <th class="text-left py-2">订单数</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-borderDark/30">
+            <td class="py-2">+ 大星 子代理</td>
+            <td class="py-2">CHH9S66DZXLB</td>
+            <td class="py-2">1</td>
+            <td class="py-2">228.00</td>
+            <td class="py-2">2</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="page-orders" class="page-content block">
+    <h2 class="text-lg mb-4">订单记录</h2>
+    <div class="flex items-center gap-4 mb-6 flex-wrap">
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <span>—</span>
+      <input type="date" value="2026-07-08" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <input placeholder="订单号" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <input placeholder="账号" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <input placeholder="角色ID" class="bg-darkCard border border-borderDark px-2 py-1 rounded">
+      <button class="px-3 py-1 bg-darkCard rounded hover:bg-borderDark">
+        <i class="fa fa-refresh mr-1"></i>刷新
+      </button>
+    </div>
+    <div class="bg-darkCard rounded p-4">
+      <table class="w-full text-sm">
+        <thead class="text-textGray border-b border-borderDark">
+          <tr>
+            <th class="text-left py-2">订单号</th>
+            <th class="text-left py-2">状态</th>
+            <th class="text-left py-2">金额</th>
+            <th class="text-left py-2">账号</th>
+            <th class="text-left py-2">玩家</th>
+            <th class="text-left py-2">区服</th>
+            <th class="text-left py-2">角色ID</th>
+            <th class="text-left py-2">支付时间</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b border-borderDark/30">
+            <td class="py-2">PAY202607080200277CCC1A</td>
+            <td class="py-2"><span class="tag-paid">已支付</span></td>
+            <td class="py-2">30</td>
+            <td class="py-2">a14739959825</td>
+            <td class="py-2">爱萍宝</td>
+            <td class="py-2">惊天动地2服</td>
+            <td class="py-2 break-all text-xs">0084b1df79c4<br>51ff8cb32d9fe2e31c44</td>
+            <td class="py-2">2026-07-08 10:00:45</td>
+          </tr>
+          <tr class="border-b border-borderDark/30">
+            <td class="py-2">PAY2026070722181158C908</td>
+            <td class="py-2"><span class="tag-paid">已支付</span></td>
+            <td class="py-2">198</td>
+            <td class="py-2">8832995</td>
+            <td class="py-2">星翠无痕</td>
+            <td class="py-2">惊天动地1服</td>
+            <td class="py-2 break-all text-xs">79fecd5bfc004b6da540faf63c48141f</td>
+            <td class="py-2">2026-07-08 06:18:42</td>
+          </tr>
+          <tr>
+            <td class="py-2">PAY20260707221554681B95</td>
+            <td class="py-2"><span class="tag-expire">已过期</span></td>
+            <td class="py-2">128</td>
+            <td class="py-2">8832995</td>
+            <td class="py-2">星翠无痕</td>
+            <td class="py-2">惊天动地1服</td>
+            <td class="py-2 break-all text-xs">79fecd5bfc004b6da540faf63c48141f</td>
+            <td class="py-2">-</td>
+          </tr>
+        </tbody>
+        <tfoot class="mt-2 text-right text-textGray">
+          <tr>
+            <td colspan="8" class="py-2">
+              <div class="float-right">1 / 1页</div>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+</div>
 
 <script>
-function jump(){
-    //把你的QQ群链接写在双引号里面
-    let qqurl = "https://qm.qq.com/q/tV41t1AbHq";
-    window.location.href = qqurl;
-}
-</script>
+// 侧边栏页面切换逻辑
+const menuItems = document.querySelectorAll('.sidebar-item');
+const pages = document.querySelectorAll('.page-content');
+
+menuItems.forEach(item => {
+  项.addEventListener('点击', () => {
+    // 清空激活
+    菜单项.forEach(m => m.classList.remove('active'));
+    item.classList.add('active');
+    // 隐藏所有页面
+    pages.forEach(p => p.classList.add('hidden'));
+    // 展示目标页面
+    const targetId = item.dataset.page;
+    document.getElementById(`page-${targetId}`).classList.remove('hidden');
+  })
+})
+</脚本>
+
 </body>
-</html>
+    </html>
